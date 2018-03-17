@@ -1,0 +1,21 @@
+language: android
+sudo: required
+jdk: oraclejdk8
+
+android:
+  components:
+    - tools
+    - platform-tools
+    - tools
+    - build-tools-27.0.3
+    - android-27
+
+script: 
+    - ./gradlew test
+#    - mvn install
+#deploy:
+#  provider: bintray
+#  file: "descriptor.json"
+#  user: "Bintray user"
+#  key: "Bintray API key"
+#  on: master

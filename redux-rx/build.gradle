@@ -1,0 +1,12 @@
+apply plugin: 'kotlin'
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':redux')
+
+    def dependencies = rootProject.ext
+    implementation dependencies.kotlinStdlib
+    implementation dependencies.reduxRxDependencies.rxJava2
+    implementation dependencies.reduxRxDependencies.rxRelay2
+}

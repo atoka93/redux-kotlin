@@ -1,0 +1,20 @@
+# IntelliJ
+.idea
+*.iml
+*.iws
+*.ipr
+classes
+gen-external-apklibs
+
+# Gradle
+.gradle
+jniLibs
+build
+local.properties
+reports
+
+# MacOS
+.DS_Store
+
+/captures
+.externalNativeBuild

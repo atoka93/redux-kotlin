@@ -1,0 +1,12 @@
+ext {
+
+    rxJava2Version = '2.1.10'
+    rxRelay2Version = '2.0.0'
+
+    kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    reduxRxDependencies = [
+            rxJava2     : "io.reactivex.rxjava2:rxjava:$rxJava2Version",
+            rxRelay2    : "com.jakewharton.rxrelay2:rxrelay:$rxRelay2Version"
+    ]
+}
