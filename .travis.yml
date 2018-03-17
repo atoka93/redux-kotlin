@@ -10,8 +10,17 @@ android:
     - build-tools-27.0.3
     - android-27
 
+# Workaround for accepting licenses:
+# https://github.com/travis-ci/travis-ci/issues/8874
+before_install:
+  - yes | sdkmanager "tools"
+  - yes | sdkmanager "platform-tools"
+  - yes | sdkmanager "build-tools;27.0.3"
+  - yes | sdkmanager "platforms;android-27"
+
 script: 
     - ./gradlew test
+
 #    - mvn install
 #deploy:
 #  provider: bintray
