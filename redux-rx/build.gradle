@@ -10,3 +10,5 @@ dependencies {
     implementation dependencies.reduxRxDependencies.rxJava2
     implementation dependencies.reduxRxDependencies.rxRelay2
 }
+
+apply from: rootProject.file('publish.gradle')

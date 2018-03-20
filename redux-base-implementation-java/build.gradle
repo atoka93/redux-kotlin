@@ -7,3 +7,5 @@ dependencies {
 
     implementation rootProject.ext.kotlinStdlib
 }
+
+apply from: rootProject.file('publish.gradle')

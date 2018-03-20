@@ -10,7 +10,7 @@ android:
     - build-tools-27.0.3
     - android-27
 
-# Workaround for accepting licenses:
+# Accept licenses manually, workaround:
 # https://github.com/travis-ci/travis-ci/issues/8874
 before_install:
   - yes | sdkmanager "tools"
@@ -19,12 +19,12 @@ before_install:
   - yes | sdkmanager "platforms;android-27"
 
 script: 
-    - ./gradlew test
+    - ./gradlew build
 
-#    - mvn install
-#deploy:
-#  provider: bintray
-#  file: "descriptor.json"
-#  user: "Bintray user"
-#  key: "Bintray API key"
-#  on: master
+deploy:
+  skip_cleanup: true
+  provider: script
+  script:
+    - ./gradlew build bintrayUpload --info
+  on:
+    branch: master
