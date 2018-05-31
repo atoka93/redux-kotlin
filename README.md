@@ -3,14 +3,14 @@
 [![Build Status](https://travis-ci.org/atoka93/redux-kotlin.svg?branch=master)](https://travis-ci.org/atoka93/redux-kotlin)
 
 Object-oriented [Redux](https://redux.js.org/) implementation in Kotlin.
-- `redux-kotlin` is the base concept, this is a pure Kotlin module that contains the basic functionality of redux.
-- `redux-kotlin-base-implementation-java` contains basic implementations of a store and a asynchronus version of the store. Since the
-Kotlin Coroutines are still *experimental* I used java classes for the implementation, hence the name. It includes the base module.
+- `redux-kotlin` is the base module, this is a pure Kotlin module that contains the basic functionality of Redux.
+- `redux-kotlin-base-implementation-java` contains basic implementations of a store and a asynchronous version of the store. Since the
+Kotlin Coroutines are still *experimental* I used java classes for the implementation. It includes the base module.
 - `redux-kotlin-base-implementation-android` contains useful extensions for Android. This module includes the previous module.
 - `redux-kotlin-rx-extensions` contains extensions to enable RxJava2 usage. This module does not include but requires the base module.
 
 ## Example
-An example android application demonstrating an architecture based on the [clean architecture principles](https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html) and [Redux](https://redux.js.org/) using these libraries can be found [here](https://github.com/atoka93/clean-redux-demo).
+A sample Android application showcasing an architecture combining [Redux](https://redux.js.org/) and the [Clean Architecture](https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html) principles using these libraries can be found [here](https://github.com/atoka93/clean-redux-demo).
 
 ## Download
 The libraries are available on [jcenter](https://bintray.com/bintray/jcenter?filterByPkgName=net.attilaszabo.redux) via Maven, Gradle or Ivy.
