@@ -1,1 +1,1 @@
-include ':redux', ':redux-rx', ':redux-base-implementation-java', ':redux-base-implementation-android'
+include ':redux', ':redux-rx-extensions', ':redux-base-implementation', ':redux-android-extensions'

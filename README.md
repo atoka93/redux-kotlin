@@ -4,9 +4,9 @@
 
 Object-oriented [Redux](https://redux.js.org/) implementation in Kotlin.
 - `redux-kotlin` is the base module, this is a pure Kotlin module that contains the basic functionality of Redux.
-- `redux-kotlin-base-implementation-java` contains basic implementations of a store and a asynchronous version of the store. Since the
+- `redux-kotlin-base-implementation` contains basic implementations of a store and a asynchronous version of the store. Since the
 Kotlin Coroutines are still *experimental* I used java classes for the implementation. It includes the base module.
-- `redux-kotlin-base-implementation-android` contains useful extensions for Android. This module includes the previous module.
+- `redux-kotlin-android-extensions` contains useful extensions for Android. This module includes the previous module.
 - `redux-kotlin-rx-extensions` contains extensions to enable RxJava2 usage. This module does not include but requires the base module.
 
 ## Example
@@ -19,8 +19,8 @@ Gradle:
 ```groovy
 dependencies {
     implementation 'net.attilaszabo.redux:redux-kotlin:{latest_version}'
-    implementation 'net.attilaszabo.redux:redux-kotlin-base-implementation-java:{latest_version}'
-    implementation 'net.attilaszabo.redux:redux-kotlin-base-implementation-android:{latest_version}'
+    implementation 'net.attilaszabo.redux:redux-kotlin-implementation:{latest_version}'
+    implementation 'net.attilaszabo.redux:redux-kotlin-android-extensions:{latest_version}'
     implementation 'net.attilaszabo.redux:redux-kotlin-rx-extensions:{latest_version}'
 }
 ```
