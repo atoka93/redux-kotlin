@@ -1,0 +1,12 @@
+apply plugin: 'kotlin'
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api project(':redux-base-implementation')
+    api project(':redux-android-extensions-state')
+
+    implementation rootProject.ext.kotlinStdlib
+}
+
+apply from: rootProject.file('publish.gradle')

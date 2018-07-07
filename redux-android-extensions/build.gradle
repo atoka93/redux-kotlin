@@ -21,9 +21,11 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api project(':redux-base-implementation')
+    api project(':redux-android-extensions-domain')
 
-    implementation rootProject.ext.kotlinStdlib
+    def dependencies = rootProject.ext
+    implementation dependencies.kotlinStdlib
+    implementation dependencies.androidDependencies.supportAppcompat
 }
 
 apply from: rootProject.file('publish.gradle')

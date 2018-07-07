@@ -15,35 +15,34 @@ import java.util.concurrent.Executors
  * @param reducer The [Reducer]
  */
 class AsyncStore<S>
-private constructor(initialState: S, reducer: Reducer<S>, private val mMainThreadExecutor: (Runnable) -> Unit)
-    : BaseStore<S>(initialState, reducer) {
+private constructor(initialState: S, reducer: Reducer<S>, private val mainThreadExecutor: (Runnable) -> Unit) : BaseStore<S>(initialState, reducer) {
 
     // Store
 
     override fun dispatch(action: Action) {
-        if (mIsReducing.compareAndSet(false, true)) {
+        if (isReducing.compareAndSet(false, true)) {
             try {
-                val previousState = mState
-                mState = mReducer.reduce(mState, action)
+                val previousState = storedState
+                storedState = reducer.reduce(storedState, action)
 
-                if (previousState != mState) {
-                    mSubscribers.forEach {
-                        mMainThreadExecutor(Runnable { it.onStateChanged(mState) })
+                if (previousState != storedState) {
+                    subscribers.forEach {
+                        mainThreadExecutor(Runnable { it.onStateChanged(storedState) })
                     }
                 }
             } catch (e: Exception) {
-                mMainThreadExecutor(Runnable { throw IllegalStateException("Dispatch exception: ${e.message}") })
+                mainThreadExecutor(Runnable { throw IllegalStateException("Dispatch exception: ${e.message}") })
             } finally {
-                mIsReducing.set(false)
+                isReducing.set(false)
             }
         }
     }
 
     // Creator
 
-    class Creator<S>(private val mMainThreadExecutor: (Runnable) -> Unit = { it.run() }) : Store.Creator<S> {
+    class Creator<S>(private val mainThreadExecutor: (Runnable) -> Unit = { it.run() }) : Store.Creator<S> {
 
-        override fun create(initialState: S, reducer: Reducer<S>) = AsyncStore(initialState, reducer, mMainThreadExecutor)
+        override fun create(initialState: S, reducer: Reducer<S>) = AsyncStore(initialState, reducer, mainThreadExecutor)
     }
 
     companion object {
@@ -59,9 +58,11 @@ private constructor(initialState: S, reducer: Reducer<S>, private val mMainThrea
          * @param [enhancers] A list of enhancers
          * @return The store
          */
-        fun <S> create(mainThreadExecutor: (Runnable) -> Unit, initialState: S,
-                       reducer: Reducer<S>, vararg enhancers: Enhancer<S>): Store<S> =
-                createStore(Creator(mainThreadExecutor), initialState, reducer, *enhancers, applyAsyncDispatch())
+        fun <S> create(
+            mainThreadExecutor: (Runnable) -> Unit, initialState: S,
+            reducer: Reducer<S>, vararg enhancers: Enhancer<S>
+        ): Store<S> =
+            createStore(Creator(mainThreadExecutor), initialState, reducer, *enhancers, applyAsyncDispatch())
 
         /**
          * An [Enhancer] to submit dispatch commands to an executor to execute on a separate thread.
@@ -74,20 +75,20 @@ private constructor(initialState: S, reducer: Reducer<S>, private val mMainThrea
 
                     // Members
 
-                    private val mStore = next.create(initialState, reducer)
-                    private val mExecutorService = Executors.newSingleThreadExecutor()
+                    private val store = next.create(initialState, reducer)
+                    private val executorService = Executors.newSingleThreadExecutor()
 
                     // Store
 
-                    override fun subscribe(subscriber: Subscriber<S>) = mStore.subscribe(subscriber)
+                    override fun subscribe(subscriber: Subscriber<S>) = store.subscribe(subscriber)
 
-                    override fun getState(): S = mStore.getState()
+                    override fun getState(): S = store.getState()
 
-                    override fun replaceReducer(reducer: Reducer<S>) = mStore.replaceReducer(reducer)
+                    override fun replaceReducer(reducer: Reducer<S>) = store.replaceReducer(reducer)
 
                     override fun dispatch(action: Action) {
-                        mExecutorService.submit {
-                            mStore.dispatch(action)
+                        executorService.submit {
+                            store.dispatch(action)
                         }
                     }
                 }

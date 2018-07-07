@@ -1,0 +1,10 @@
+apply plugin: 'kotlin'
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation rootProject.ext.kotlinStdlib
+}
+
+apply from: rootProject.file('publish.gradle')

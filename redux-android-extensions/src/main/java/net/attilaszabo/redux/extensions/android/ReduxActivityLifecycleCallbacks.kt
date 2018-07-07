@@ -1,7 +1,13 @@
 package net.attilaszabo.redux.extensions.android
 
 import android.app.Activity
-import android.app.Application
+import android.app.Application.ActivityLifecycleCallbacks
+import android.content.ComponentCallbacks2
+import android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND
+import android.content.ComponentCallbacks2.TRIM_MEMORY_COMPLETE
+import android.content.ComponentCallbacks2.TRIM_MEMORY_MODERATE
+import android.content.ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,31 +17,30 @@ import net.attilaszabo.redux.enhancers.Enhancer
 import net.attilaszabo.redux.implementation.java.AsyncStore
 
 class ReduxActivityLifecycleCallbacks<S>(
-        private val mStatePersistenceListener: StatePersistenceListener<S>,
-        private val mInitialState: S,
-        private val mReducer: Reducer<S>,
-        private val mEnhancer: Enhancer<S>
-) : Application.ActivityLifecycleCallbacks {
+    private val statePersistenceListener: StatePersistenceListener<S>,
+    private val initialState: S,
+    private val reducer: Reducer<S>,
+    private val enhancer: Enhancer<S>
+) : ActivityLifecycleCallbacks, ComponentCallbacks2 {
 
     // Members
 
-    private lateinit var mStore: Store<S>
-    private var mFirstActivityCreated: Boolean = false
+    private lateinit var store: Store<S>
+    private var firstActivityCreated: Boolean = false
 
     // ActivityLifecycleCallbacks
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-        if (mFirstActivityCreated) {
+        if (firstActivityCreated) {
             return
         }
-        mFirstActivityCreated = true
+        firstActivityCreated = true
 
-        mStore = AsyncStore.create(
-                mainThreadExecutor = ::executor,
-                initialState = mStatePersistenceListener.restoreState(savedInstanceState)
-                        ?: mInitialState,
-                reducer = mReducer,
-                enhancers = *arrayOf(mEnhancer)
+        store = AsyncStore.create(
+            mainThreadExecutor = ::executor,
+            initialState = statePersistenceListener.restoreState(savedInstanceState) ?: initialState,
+            reducer = reducer,
+            enhancers = *arrayOf(enhancer)
         )
     }
 
@@ -55,12 +60,26 @@ class ReduxActivityLifecycleCallbacks<S>(
     }
 
     override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
-        mStatePersistenceListener.saveState(outState, mStatePersistenceListener.removeTransientState(mStore.getState()))
+        statePersistenceListener.saveState(outState, statePersistenceListener.removeTransientState(store.getState()))
+    }
+
+    // ComponentCallbacks2
+
+    override fun onLowMemory() {
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+    }
+
+    override fun onTrimMemory(level: Int) {
+        if (level in listOf(TRIM_MEMORY_UI_HIDDEN, TRIM_MEMORY_BACKGROUND, TRIM_MEMORY_MODERATE, TRIM_MEMORY_COMPLETE)) {
+            statePersistenceListener.saveStateToFile(store.getState())
+        }
     }
 
     // Public Api
 
-    fun getStore(): Store<S> = mStore
+    fun getStore(): Store<S> = store
 
     // Private Api
 
@@ -75,6 +94,8 @@ class ReduxActivityLifecycleCallbacks<S>(
         }
 
         fun saveState(outInstanceState: Bundle?, state: S)
+
+        fun saveStateToFile(state: S)
 
         fun restoreState(savedInstanceState: Bundle?): S?
     }

@@ -15,13 +15,13 @@ open class RxSubscriber<S>(store: Store<S>) : Subscriber<S> {
 
     // Members
 
-    private val mState: PublishRelay<S> = PublishRelay.create()
-    private val mSubscription: Subscription = store.subscribe(this)
+    private val state: PublishRelay<S> = PublishRelay.create()
+    private val subscription: Subscription = store.subscribe(this)
 
     // Subscriber
 
     override fun onStateChanged(state: S) {
-        this@RxSubscriber.mState.accept(state)
+        this@RxSubscriber.state.accept(state)
     }
 
     // Public Api
@@ -31,6 +31,5 @@ open class RxSubscriber<S>(store: Store<S>) : Subscriber<S> {
      *
      * @return <T> The state
      */
-    fun state(): Observable<S> = mState
-            .doOnDispose { mSubscription.unsubscribe() }
+    fun state(): Observable<S> = state.doOnDispose { subscription.unsubscribe() }
 }

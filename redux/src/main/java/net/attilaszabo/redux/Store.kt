@@ -12,12 +12,11 @@ import net.attilaszabo.redux.enhancers.Enhancer
  *  * Handle unregistering listeners
  *
  * @param <S> The state type
- * @param mState The state
- * @param mReducer The [Reducer]
+ * @param storedState The state
+ * @param reducer The [Reducer]
  */
 abstract class Store<S>
-protected constructor(protected var mState: S, protected var mReducer: Reducer<S>)
-    : Dispatcher {
+protected constructor(protected var storedState: S, protected var reducer: Reducer<S>) : Dispatcher {
 
     /**
      * Adds a change listener.
@@ -66,8 +65,7 @@ protected constructor(protected var mState: S, protected var mReducer: Reducer<S
          * @param [enhancers] A list of enhancers
          * @return The store
          */
-        fun <S> createStore(storeCreator: Creator<S>, initialState: S, reducer: Reducer<S>,
-                            vararg enhancers: Enhancer<S>): Store<S> {
+        fun <S> createStore(storeCreator: Creator<S>, initialState: S, reducer: Reducer<S>, vararg enhancers: Enhancer<S>): Store<S> {
             var creator: Creator<S> = storeCreator
             creator = enhancers.fold(creator) { enhancerCreator, enhancer ->
                 enhancer.enhance(enhancerCreator)

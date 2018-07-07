@@ -1,6 +1,10 @@
 package net.attilaszabo.redux.implementation.java
 
-import net.attilaszabo.redux.*
+import net.attilaszabo.redux.Action
+import net.attilaszabo.redux.Reducer
+import net.attilaszabo.redux.Store
+import net.attilaszabo.redux.Subscriber
+import net.attilaszabo.redux.Subscription
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -11,44 +15,43 @@ import java.util.concurrent.atomic.AtomicBoolean
  * @param reducer The [Reducer]
  */
 open class BaseStore<S>
-protected constructor(initialState: S, reducer: Reducer<S>)
-    : Store<S>(initialState, reducer) {
+protected constructor(initialState: S, reducer: Reducer<S>) : Store<S>(initialState, reducer) {
 
     // Members
 
-    protected val mIsReducing = AtomicBoolean(false)
-    protected val mSubscribers = ArrayList<Subscriber<S>>()
+    protected val isReducing = AtomicBoolean(false)
+    protected val subscribers = ArrayList<Subscriber<S>>()
 
     // Store
 
     override fun subscribe(subscriber: Subscriber<S>): Subscription {
-        mSubscribers.add(subscriber)
+        subscribers.add(subscriber)
         return object : Subscription {
             override fun unsubscribe() {
-                mSubscribers.remove(subscriber)
+                subscribers.remove(subscriber)
             }
         }
     }
 
     override fun replaceReducer(reducer: Reducer<S>) {
-        mReducer = reducer
+        this.reducer = reducer
     }
 
-    override fun getState(): S = mState
+    override fun getState(): S = storedState
 
     override fun dispatch(action: Action) {
-        if (mIsReducing.compareAndSet(false, true)) {
+        if (isReducing.compareAndSet(false, true)) {
             try {
-                val previousState = mState
-                mState = mReducer.reduce(mState, action)
+                val previousState = storedState
+                storedState = reducer.reduce(storedState, action)
 
-                if (previousState != mState) {
-                    mSubscribers.forEach { it.onStateChanged(mState) }
+                if (previousState != storedState) {
+                    subscribers.forEach { it.onStateChanged(storedState) }
                 }
             } catch (e: Exception) {
                 throw IllegalStateException("Dispatch exception: ${e.message}")
             } finally {
-                mIsReducing.set(false)
+                isReducing.set(false)
             }
         }
     }

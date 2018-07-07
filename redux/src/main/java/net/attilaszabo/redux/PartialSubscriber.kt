@@ -6,21 +6,19 @@ package net.attilaszabo.redux
  * @param <S> The state type
  * @param <T> The sub-state type
  */
-open class PartialSubscriber<in S, T>(
-        private val mSubStateChangeListener: SubStateChangeListener<S, T>
-) : Subscriber<S> {
+open class PartialSubscriber<in S, T>(private val subStateChangeListener: SubStateChangeListener<S, T>) : Subscriber<S> {
 
     // Members
 
-    private var mPreviousValue: T? = null
+    private var previousValue: T? = null
 
     // Subscriber
 
     override fun onStateChanged(state: S) {
-        val subState = mSubStateChangeListener.getSubState(state)
-        if (mPreviousValue == null || subState != mPreviousValue) {
-            mSubStateChangeListener.onSubStateChanged(subState)
-            mPreviousValue = subState
+        val subState = subStateChangeListener.getSubState(state)
+        if (previousValue == null || subState != previousValue) {
+            subStateChangeListener.onSubStateChanged(subState)
+            previousValue = subState
         }
     }
 

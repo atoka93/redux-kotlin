@@ -40,22 +40,22 @@ interface Middleware<in S> {
 
                     // Members
 
-                    private val mStoreInstance: Store<S> = this
-                    private val mStore = next.create(initialState, reducer)
+                    private val storeInstance: Store<S> = this
+                    private val store = next.create(initialState, reducer)
 
                     // Store
 
-                    override fun subscribe(subscriber: Subscriber<S>): Subscription = mStore.subscribe(subscriber)
+                    override fun subscribe(subscriber: Subscriber<S>): Subscription = store.subscribe(subscriber)
 
-                    override fun getState(): S = mStore.getState()
+                    override fun getState(): S = store.getState()
 
-                    override fun replaceReducer(reducer: Reducer<S>) = mStore.replaceReducer(reducer)
+                    override fun replaceReducer(reducer: Reducer<S>) = store.replaceReducer(reducer)
 
                     override fun dispatch(action: Action) {
-                        val combinedDispatcher = middlewares.foldRight(mStore as Dispatcher) { middleware, next ->
+                        val combinedDispatcher = middlewares.foldRight(store as Dispatcher) { middleware, next ->
                             object : Dispatcher {
                                 override fun dispatch(action: Action) =
-                                        middleware.dispatch(mStoreInstance::getState, action, next, mStoreInstance)
+                                    middleware.dispatch(storeInstance::getState, action, next, storeInstance)
                             }
                         }
                         combinedDispatcher.dispatch(action)

@@ -25,7 +25,7 @@ object StoreEnhancers {
 
                 // Members
 
-                private val mStore = next.create(initialState, reducer)
+                private val store = next.create(initialState, reducer)
 
                 // Constructor
 
@@ -36,12 +36,12 @@ object StoreEnhancers {
 
                 // Store
 
-                override fun subscribe(subscriber: Subscriber<S>): Subscription = mStore.subscribe(subscriber)
+                override fun subscribe(subscriber: Subscriber<S>): Subscription = store.subscribe(subscriber)
 
-                override fun getState(): S = mStore.getState()
+                override fun getState(): S = store.getState()
 
                 override fun replaceReducer(reducer: Reducer<S>) {
-                    mStore.replaceReducer(reducer)
+                    store.replaceReducer(reducer)
                     // Dispatch the initial action if the reducer is replaced
                     // and the dispatchWhenReplaced is set to true
                     if (dispatchWhenReplaced) {
@@ -49,7 +49,7 @@ object StoreEnhancers {
                     }
                 }
 
-                override fun dispatch(action: Action) = mStore.dispatch(action)
+                override fun dispatch(action: Action) = store.dispatch(action)
             }
         }
     }
