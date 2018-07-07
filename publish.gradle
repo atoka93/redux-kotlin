@@ -2,7 +2,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
-version '1.1.0'
+version '0.9.9'
 group = 'net.attilaszabo.redux'
 archivesBaseName = BINTRAY_PACKAGE_NAME
 

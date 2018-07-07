@@ -27,4 +27,7 @@ deploy:
   script:
     - ./gradlew build bintrayUpload --info
   on:
-    branch: master
+    branches:
+      only:
+        - master
+        - feature/test-build-0.9.9
