@@ -21,13 +21,11 @@ before_install:
 script: 
     - ./gradlew build
 
-deploy:
-  skip_cleanup: true
-  provider: script
-  script:
-    - ./gradlew build bintrayUpload --info
-  on:
-    branches:
-      only:
-        - master
-        - feature/test-build-0.9.9
+#deploy:
+#  skip_cleanup: true
+#  provider: script
+#  script:
+#    - ./gradlew build bintrayUpload --info
+#  on:
+#    all_branches: true
+#    condition: $TRAVIS_BRANCH =~ ^master|feature/test-build-0.9.9$
