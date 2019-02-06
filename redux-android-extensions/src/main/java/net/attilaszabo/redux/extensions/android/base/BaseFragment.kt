@@ -1,7 +1,7 @@
 package net.attilaszabo.redux.extensions.android.base
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 
 abstract class BaseFragment<S, TViewModel : BaseViewModel<S>> : Fragment() {
 

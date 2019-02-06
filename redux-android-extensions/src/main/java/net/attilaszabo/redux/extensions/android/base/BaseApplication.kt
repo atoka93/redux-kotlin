@@ -2,8 +2,7 @@ package net.attilaszabo.redux.extensions.android.base
 
 import android.app.Application
 import android.os.Bundle
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import net.attilaszabo.redux.Store
 import net.attilaszabo.redux.extensions.android.ReduxActivityLifecycleCallbacks
 import net.attilaszabo.redux.extensions.android.ReduxActivityLifecycleCallbacks.StatePersistenceListener
@@ -26,7 +25,7 @@ abstract class BaseApplication<S> : Application(), StatePersistenceListener<S> {
         setFragmentManager(identifier, activity?.supportFragmentManager)
     }
 
-    fun setFragmentManager(identifier: NavigationTag, fragmentManager: FragmentManager?) {
+    fun setFragmentManager(identifier: NavigationTag, fragmentManager: androidx.fragment.app.FragmentManager?) {
         navigationHandler.addFragmentManager(identifier, fragmentManager)
     }
 
